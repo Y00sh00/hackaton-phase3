@@ -1,0 +1,60 @@
+{
+  "config": {
+    "traits": [
+      {
+        "traitSlot": "bodyColor"
+      }
+    ]
+  },
+  "slots": [
+    {
+      "slotName": "Horns",
+      "slots": []
+    },
+    {
+      "slotName": "Arms",
+      "slots": []
+    },
+    {
+      "slotName": "Legs",
+      "slots": []
+    },
+    {
+      "slotName": "Head",
+      "slots": [
+        {
+          "slotName": "Hair"
+        },
+        {
+          "slotName": "Eyes"
+        },
+        {
+          "slotName": "Ears"
+        },
+        {
+          "slotName": "Mouth",
+          "slots": [
+            {
+              "slotName": "Nose_Accessory"
+            },
+            {
+              "slotName": "Beard"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slotName": "MainBody"
+    },
+    {
+      "slotName": "Hands"
+    },
+    {
+      "slotName": "Belt"
+    },
+    {
+      "slotName": "Pants"
+    }
+  ]
+}

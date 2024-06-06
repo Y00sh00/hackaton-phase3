@@ -1,0 +1,295 @@
+<!-- TODO MOVE THIS -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+  </symbol>
+  <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+  </symbol>
+  <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+  </symbol>
+</svg>
+
+<ng-container
+  *ngIf="{isLoaded: isLoaded$ | async, mascots: mascots$ | async, traits: traits$ | async, slotsInInventory: slotsInInventory$ | async, slotsNotInInventory: slotsNotInInventory$ | async, slotsAvailableForSelectedMascot: slotsAvailableForSelectedMascot$ | async} as context">
+  <ng-container *ngIf="!context.isLoaded">
+    <div class="d-flex justify-content-center mt-3">
+      <div class="spinner-grow" role="status" style="width: 20rem; height: 20rem;">
+      </div>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <div class="bg-dark-transparent rounded px-2 py-2 mt-2 text-white">
+
+        <div class="loader">Loading or writing data on <a
+          class="highlight-color tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">blockchain</a> <span
+          class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span></div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="context.isLoaded">
+
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs dark">
+      <li [ngbNavItem]="1">
+        <button ngbNavLink>Mascots Inventory</button>
+        <ng-template ngbNavContent>
+          <ng-container *ngIf="context.mascots">
+            <div class="card bg-dark-transparent text-white flex-grow-1 rounded-0">
+              <div class="card-body d-flex flex-column">
+                <h1 class="card-title highlight-color">
+                  Your Mascot Inventory
+                </h1>
+                <p>
+                  Below is an overview of all the mascots you own, you can modify them whenever you want.
+                </p>
+              </div>
+            </div>
+
+            <div class="row equal-height-row d-flex flex-wrap">
+              <div class="col-3 d-flex flex-column justify-content-between" *ngFor="let mascot of context.mascots">
+                <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+                  <div class="card-body d-flex flex-column mascot-card">
+                    <div class="mascot-header">
+                      <h1 class="card-title highlight-color">
+                        {{mascot.name}}
+                      </h1>
+                      <a class="btn btn-primary btn-sm" (click)="modify(mascot.id)">Modify</a>
+                    </div>
+                    <div class="preview-container" *ngIf="mascot">
+                      <ng-container *ngFor="let slot of mascot?.slots">
+                        <app-render [options]="slot"
+                                    [config]="{name: mascot.name, mascotType: mascot.mascotType, traits: mascot.traits}"></app-render>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+                  <div class="card-body d-flex flex-column mascot-card">
+                    <h1 class="card-title highlight-color mb3">
+                      Adopt a new Mascot
+                    </h1>
+                    <p>
+                      Want a new Mascot? You can <a class="tooltip-trigger highlight-color" [ngbTooltip]="placeholder"
+                                                    triggers="click:blur">mint</a> one right now! You will not loose
+                      your
+                      other mascots when you pick a new one. They will all be available in your inventory.
+                    </p>
+                    <div class="alert alert-dark d-flex align-items-center small" role="alert">
+                      <div>
+                        During Phase 3 of Project Awakening testing you can <a class="tooltip-trigger"
+                                                                               [ngbTooltip]="placeholder"
+                                                                               triggers="click:blur">mint</a> your
+                        mascots for
+                        free! In the actual
+                        implementation you would mint them with a community's <a class="tooltip-trigger"
+                                                                                 [ngbTooltip]="placeholder"
+                                                                                 triggers="click:blur">ERC20 token</a>.
+                      </div>
+                    </div>
+                    <a routerLink="/mint" class="btn btn-primary btn-sm mt-auto">Pick a new Mascot</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="2">
+        <button ngbNavLink>Traits Inventory</button>
+        <ng-template ngbNavContent>
+          <div class="row equal-height-row d-flex flex-wrap">
+            <div class="col-6">
+              <div class="card bg-dark-transparent text-white flex-grow-1 rounded-0 h-100">
+                <div class="card-body d-flex flex-column">
+                  <h1 class="card-title highlight-color">
+                    Your Trait Inventory
+                  </h1>
+                  <p>
+                    Below is an overview of all the Traits you own. Character traits are features that modify the
+                    overall
+                    appearance of the character in a comprehensive way. For instance, the 'bodyColor' trait changes the
+                    color of the entire body, ensuring consistency across all parts.
+                  </p>
+                  <div class="alert alert-dark d-flex align-items-center small mb-1 mt-1" role="alert">
+                    <div>
+                      During Phase 3 of Project Awakening testing you can use <a class="tooltip-trigger"
+                                                                                 [ngbTooltip]="placeholder"
+                                                                                 triggers="click:blur">"Preview
+                      Mode"</a> in the Editor to customize your mascots with all traits.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card bg-dark-transparent text-white flex-grow-1 rounded-0 h-100">
+                <div class="card-body d-flex flex-column">
+                  <h1 class="card-title highlight-color mb3">
+                    Unlock new Traits
+                  </h1>
+                  <p>
+                    Want to spice up your mascot with new colors, below are the available options to unlock new Traits.
+                  </p>
+                  <ul>
+                    <li>4 Body Colors can unlock by minting a new Mascot</li>
+                    <li>Campaigns (Coming Soon)</li>
+                    <li>Store (Coming Soon Hopefully)</li>
+                    <li>Scavenge Hunts: Find SSUs and unlock a cosmetic! (Maybe?)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2" style="display: flex; justify-content: flex-end;">
+            <a *ngIf="!viewAllTraits" class="btn btn-dark btn-sm" (click)="toggleViewAllTraits()">View All</a>
+            <a *ngIf="viewAllTraits" class="btn btn-dark btn-sm" (click)="toggleViewAllTraits()">Show Mine</a>
+          </div>
+          <div class="card bg-dark-transparent text-white flex-grow-1 rounded-0 h-100 mt-2">
+            <div class="card-body">
+              <h1 class="card-title highlight-color">
+                Traits
+              </h1>
+              <div class="row equal-height-row d-flex flex-wrap mt-2">
+                <div class="col-2" *ngFor="let trait of context.traits">
+                  <div class="card flex-grow-1 h-100 text-center" [ngStyle]="{'background-color': trait.optionValue}"
+                       style="background-color: grey;display: flex;flex-direction: row;align-items: center;justify-content: center;">
+                    {{trait.optionName}}
+                    <fa-icon class="ms-2" *ngIf="!trait.owned" [icon]="lockIcon"></fa-icon>
+                  </div>
+                </div>
+                <div *ngIf="!context.traits || context.traits?.length === 0">
+                  <div class="alert alert-danger d-flex align-items-center small mb-1 mt-1" role="alert">
+                    <div class="flex-shrink-0 me-2">
+                      <fa-icon class="fa-2x" [icon]="alertIcon"></fa-icon>
+                    </div>
+                    <div>
+                      You own no traits, mint a character to start collecting!
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="3">
+        <button ngbNavLink>Cosmetics Inventory</button>
+        <ng-template ngbNavContent>
+          <div class="card bg-dark-transparent text-white flex-grow-1 rounded-0">
+            <div class="card-body d-flex flex-column">
+              <h1 class="card-title highlight-color">
+                Your Cosmetics Inventory
+              </h1>
+              <p>
+                Below is an overview of all the Cosmetics you own. Mascots can be customized with these cosmetics once
+                you unlock them, currently 1 cosmetic can be applied to multiple mascots at the same time.
+              </p>
+            </div>
+          </div>
+          <div class="mt-2" style="display: flex; justify-content: flex-end;">
+            <div>
+              <ng-container *ngIf="context.slotsAvailableForSelectedMascot">
+                <div class="input-group input-group-sm">
+                  <label class="input-group-text">Filter by Slot:</label>
+                  <select class="form-select form-select-sm"
+                          (change)="onSlotChange($event)">
+                    <option [value]="">
+                      Empty
+                    </option>
+                    <option *ngFor="let item of context.slotsAvailableForSelectedMascot" [value]="item">
+                      {{ item }}
+                    </option>
+                  </select>
+                </div>
+              </ng-container>
+            </div>
+            <a *ngIf="!viewAllSlots" class="btn btn-dark btn-sm ms-2" (click)="toggleViewAllSlots()">View All</a>
+            <a *ngIf="viewAllSlots" class="btn btn-dark btn-sm" (click)="toggleViewAllSlots()">Show Mine</a>
+          </div>
+          <div class="row equal-height-row d-flex flex-wrap">
+            <!-- Unlocked -->
+            <div class="col-3 d-flex flex-column justify-content-between" *ngFor="let slot of context.slotsInInventory">
+              <div class="card bg-dark-transparent text-white flex-grow-1 mt-2" [ngClass]="{'locked-bg': !slot.owned}">
+                <div class="card-body d-flex flex-column mascot-card">
+                  <div class="mascot-header mb-3">
+                    <h1 class="card-title highlight-color">
+                      <fa-icon class="locked me-2" *ngIf="!slot.owned" [icon]="lockIcon"></fa-icon>
+                      <span [ngClass]="{'locked-text': !slot.owned}">{{slot.displayName}} ({{slot.slotName}})</span>
+                    </h1>
+                  </div>
+                  <div class="preview-container" *ngIf="slot">
+                    <app-render [options]="slot"
+                                [config]="{name: 'preview', mascotType: 'preview', traits: previewTrait}"></app-render>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Locked ones -->
+            <ng-container *ngIf="viewAllSlots">
+              <div class="col-3 d-flex flex-column justify-content-between"
+                   *ngFor="let slot of context.slotsNotInInventory">
+                <div class="card bg-dark-transparent text-white flex-grow-1 mt-3"
+                     [ngClass]="{'locked-bg': !slot.owned}">
+                  <div class="card-body d-flex flex-column mascot-card">
+                    <div class="mascot-header mb-3">
+                      <h1 class="card-title highlight-color">
+                        <fa-icon class="locked me-2" *ngIf="!slot.owned" [icon]="lockIcon"></fa-icon>
+                        <span [ngClass]="{'locked-text': !slot.owned}">{{slot.displayName}} ({{slot.slotName}})</span>
+                      </h1>
+                    </div>
+                    <div class="preview-container" *ngIf="slot">
+                      <app-render [options]="slot"
+                                  [config]="{name: 'preview', mascotType: 'preview', traits: previewTrait}"></app-render>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="col-3">
+              <div class="card bg-dark-transparent text-white flex-grow-1 mt-2">
+                <div class="card-body d-flex flex-column mascot-card">
+                  <h1 class="card-title highlight-color mb3">
+                    Unlock new Cosmetics!
+                  </h1>
+                  <div class="alert alert-danger d-flex align-items-center small mb-1 mt-1" *ngIf="context.slotsInInventory?.length === 0 && !viewAllSlots" role="alert">
+                    <div class="flex-shrink-0 me-2">
+                      <fa-icon class="fa-2x" [icon]="alertIcon"></fa-icon>
+                    </div>
+                    <div>
+                      You own no traits, mint a character to start collecting!
+                    </div>
+                  </div>
+
+                  <div class="alert alert-dark d-flex align-items-center small mb-1 mt-1" role="alert">
+                    <div>
+                      During Phase 3 of Project Awakening testing you can use <a class="tooltip-trigger"
+                                                                                 [ngbTooltip]="placeholder"
+                                                                                 triggers="click:blur">"Preview
+                      Mode"</a> in the Editor to customize your mascots with all Cosmetics.
+                    </div>
+                  </div>
+                  <p>
+                    Want to spice up your mascot with new cosmetics, below are the available options to unlock new slots.
+                  </p>
+                  <ul>
+                    <li>Campaigns (Coming Soon)</li>
+                    <li>Store (Coming Soon Hopefully)</li>
+                    <li>Scavenge Hunts: Find SSUs and unlock a cosmetic! (Maybe?)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav"></div>
+  </ng-container>
+</ng-container>
+
+

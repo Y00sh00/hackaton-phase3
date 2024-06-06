@@ -1,1 +1,105 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-image: url('./assets/background.jpg');
+  background-size: cover;
+}
+
+h1, h2, h3 {
+  margin-bottom: 0 !important;
+}
+
+h1 {
+  font-size: 1.1rem !important;
+}
+
+h2 {
+  font-size: 1.0rem !important;
+}
+
+
+
+
+.content-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.bg-dark-transparent {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.highlight-color {
+  color: #eaab1a !important;
+}
+
+.card-box {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 5px;
+}
+
+.null-sec {
+  color: #F00000;
+}
+
+.title-with-image {
+  margin-top: -5px;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  color: #eaab1a !important;
+  background-color: #212529 !important;
+  border-color: #eaab1a !important;
+}
+
+.nav-tabs {
+  border-bottom-color: #eaab1a !important;
+}
+
+.align-middle {
+  vertical-align: middle;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.tooltip-trigger{
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tooltip-trigger-danger{
+  color: var(    --bs-alert-color);
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.alert-dark a{
+  color: #495057;
+}
+
+.highlight-color a{
+  color: #eaab1a !important;
+}
+
+$grid-gutter-width: 0.5rem;
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
+

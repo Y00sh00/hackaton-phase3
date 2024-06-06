@@ -1,0 +1,98 @@
+{
+  "config": {
+    "traits": [
+      {
+        "traitSlot": "bodyColor",
+        "optionName": "brown",
+        "optionValue": "#724035"
+      }
+    ]
+  },
+  "slots": [
+    {
+      "id": "1325e34a-fa02-459d-b8b6-df013c09763d",
+      "slotName": "Horns",
+      "selectedComponent": "mino-horns-1",
+      "zIndex": null
+    },
+    {
+      "id": "1325aaaa-ffff-459d-aaaa-df013c09763d",
+      "slotName": "Arms",
+      "selectedComponent": "mino-arms-1",
+      "zIndex": null
+    },
+    {
+      "id": "1325e34a-ffff-459d-b8b6-df013c09763d",
+      "slotName": "Legs",
+      "selectedComponent": "mino-legs-1",
+      "zIndex": null
+    },
+    {
+      "id": "90185ad6-5efe-4305-bd47-1c9a0033eec6",
+      "slotName": "Head",
+      "selectedComponent": "mino-head-1",
+      "zIndex": 6,
+      "slots": [
+        {
+          "slotName": "Hair"
+        },
+        {
+          "id": "70a675c7-88c5-4072-9898-4cbb84261223",
+          "slotName": "Eyes",
+          "displayName": "Angry",
+          "selectedComponent": "mino-eye-1",
+          "zIndex": 7
+        },
+        {
+          "id": "a16586fd-936a-4d0b-b2e6-57c23159186a",
+          "slotName": "Ears",
+          "selectedComponent": "mino-ear-1",
+          "zIndex": 7
+        },
+        {
+          "id": "a256bdbd-3081-47d1-8742-fa692300141b",
+          "slotName": "Mouth",
+          "selectedComponent": "mino-mouth-1",
+          "zIndex": 7,
+          "slots": [
+            {
+              "slotName": "Nose_Accessory"
+            },
+            {
+              "slotName": "Beard"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bf53e703-0424-439c-8280-d542948d99fe",
+      "slotName": "MainBody",
+      "selectedComponent": "mino-body-1"
+    },
+    {
+      "id": "1c8a2ca9-6438-441b-ae6a-551f86695f16",
+      "slotName": "LeftHand",
+      "selectedComponent": "mino-left-hand-1",
+      "zIndex": 3
+    },
+    {
+      "id": "a866e2ce-7018-4ecb-99df-eaebdd29fe20",
+      "slotName": "RightHand",
+      "selectedComponent": "mino-right-hand-1",
+      "zIndex": 8
+    },
+    {
+      "id": "c110b882-09af-4d8f-add8-8e57861663f6",
+      "slotName": "Belt",
+      "selectedComponent": "mino-belt-1",
+      "zIndex": 7
+    },
+    {
+      "id": "955dec16-3519-43e7-ba53-8aacfa218c7d",
+      "slotName": "Pants",
+      "selectedComponent": "mino-pants-1",
+      "zIndex": 6
+    }
+  ]
+}

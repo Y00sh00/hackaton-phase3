@@ -1,0 +1,30 @@
+.preview-container {
+  transform: scale(0.5);
+  margin-top: 35px;
+}
+
+.mascot-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mascot-card {
+  min-height: 350px;
+}
+
+.nav-link {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  margin-right: 5px;
+}
+
+.locked{
+  color: rgb(33, 37, 41);
+}
+
+.locked-text {
+  color: rgb(33, 37, 41);
+}
+
+.locked-bg {
+  background-color: rgba(94, 94, 94, 0.6) !important;
+}

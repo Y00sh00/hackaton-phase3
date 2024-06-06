@@ -1,0 +1,204 @@
+<!-- TODO MOVE THIS -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+  </symbol>
+  <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+  </symbol>
+  <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+  </symbol>
+</svg>
+<ng-container
+  *ngIf="{isLoaded: isLoaded$ | async, mascots: mascots$ | async, selectedMascot: selectedMascot$ | async, availableTraits: availableTraits$ | async, traitSlotsAvailable: traitSlotsAvailableForSelectedMascot$ | async, selectedTraitValues: selectedTraitValues$ | async, availableSlots: availableSlots$ | async, slotsAvailableForSelectedMascot: slotsAvailableForSelectedMascot$ | async, selectedSlotValues: selectedSlotValues$ | async} as context">
+  <ng-container *ngIf="!context.isLoaded">
+    <div class="d-flex justify-content-center mt-3">
+      <div class="spinner-grow" role="status" style="width: 20rem; height: 20rem;">
+      </div>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <div class="bg-dark-transparent rounded px-2 py-2 mt-2 text-white">
+
+        <div class="loader">Loading or writing data on <a
+          class="highlight-color tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">blockchain</a> <span class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span></div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="context.isLoaded">
+    <ng-container *ngIf="context.mascots && context.mascots.length > 0 && context.selectedMascot === undefined">
+      <app-mascot-selector></app-mascot-selector>
+    </ng-container>
+    <div class="row" *ngIf="context.mascots && context.mascots.length > 0 && context.selectedMascot">
+      <div class="col-sm d-flex flex-column">
+        <div class="card bg-dark-transparent text-white flex-grow-1">
+          <div class="card-body d-flex flex-column" style="justify-content: space-between;">
+            <div class="mascot-header">
+              <h1 class="card-title highlight-color">
+                Your Mascot: {{context.selectedMascot.name}}#{{context.selectedMascot.id}}
+              </h1>
+              <select class="form-select form-select-sm"
+                      (change)="onMascotChange($event)">
+                <option [selected]="mascot.id === context.selectedMascot.id" *ngFor="let mascot of context.mascots"
+                        [value]="mascot.id">
+                  {{ mascot.name }}#{{mascot.id}} ({{mascot.mascotType}})
+                </option>
+              </select>
+            </div>
+            <div class="character-container" *ngIf="context.selectedMascot as mascot">
+              <ng-container *ngFor="let slot of context.selectedMascot.slots">
+                <app-render [options]="slot"
+                            [config]="{name: mascot.name, mascotType: mascot.mascotType, traits: mascot.traits}"></app-render>
+              </ng-container>
+            </div>
+            <div class="debug-container">
+              <ng-template #content let-modal>
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Debug Information</h4>
+                  <button type="button" class="btn-close" aria-label="Close"
+                          (click)="modal.dismiss('Cross click')"></button>
+                </div>
+                <div class="modal-body">
+                  <pre>{{context.selectedMascot | json}}</pre>
+                </div>
+              </ng-template>
+
+              <button class="btn btn-sm btn-lg btn-dark" (click)="openDebugModel(content)">Debug Information</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm d-flex flex-column">
+        <div class="card bg-dark-transparent text-white flex-grow-1">
+          <div class="card-body d-flex flex-column options-card">
+            <h1 class="card-title highlight-color">
+              Settings
+            </h1>
+
+            <div class="alert alert-dark d-flex align-items-center mt-2" role="alert" *ngIf="!preview" style="min-height: 130px">
+              <svg class="bi flex-shrink-0 me-2" width="42" height="42" role="img" aria-label="Info:">
+                <use xlink:href="#info-fill"/>
+              </svg>
+              <div>
+                <b>Explainer</b> <br>
+                Traits & Cosmetics can be unlocked through various options: trading with others, through <a
+                class="tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">campaigns</a>, <a
+                class="tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">missions</a>, <a
+                class="tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">incentive rewards</a>, various
+                <a
+                  class="tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">crates</a> and bought
+                directly in
+                the store through <a class="tooltip-trigger" [ngbTooltip]="placeholder"
+                                     triggers="click:blur">Kalblaans</a>.
+
+                <div style="font-style: italic">(Only some of these work in Phase 3)</div>
+              </div>
+            </div>
+
+            <div class="alert alert-danger d-flex align-items-center mt-2" role="alert" *ngIf="preview" style="min-height: 130px">
+              <svg class="bi flex-shrink-0 me-2" width="42" height="42" role="img" aria-label="Info:">
+                <use xlink:href="#exclamation-triangle-fill"/>
+              </svg>
+              <div>
+                <b>Preview Mode Enabled:</b>  <br>
+                You can freely choose any cosmetic you want and save them on the  <a class="tooltip-trigger-danger" [ngbTooltip]="placeholder"
+                                                                                     triggers="click:blur">blockchain</a>, you are essentially cheating! Try to unlock the cosmetics through intended means as well!
+              </div>
+            </div>
+
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs dark">
+              <li [ngbNavItem]="1">
+                <button ngbNavLink>Traits</button>
+                <ng-template ngbNavContent>
+                  <h2 class="highlight-color">Available Traits</h2>
+                  <p>
+                    Character traits are features that modify the overall appearance of the character in a comprehensive
+                    way. For instance, the 'bodyColor' trait changes the color of the entire body, ensuring consistency
+                    across all parts. Similarly, the 'hairColor' trait adjusts the color of the hair on all relevant
+                    components, maintaining a uniform look.
+                  </p>
+                  <div *ngIf="context.availableTraits" class="mt-2">
+                    <div class="row g-3">
+                      <ng-container *ngFor="let traitSlot of context.traitSlotsAvailable">
+                        <label class="form-label col col-sm-3">{{ traitSlot }}</label>
+                        <select class="form-select form-select-sm col col-sm"
+                                (change)="onTraitChange(traitSlot, $event)">
+                          <option *ngFor="let item of context.availableTraits[traitSlot]" [value]="item.id"
+                                  [selected]="context.selectedTraitValues?.[traitSlot] === item.id"
+                                  [disabled]="!preview && !item.owned"
+                          >
+                            {{ item.optionName }}
+                          </option>
+                        </select>
+                      </ng-container>
+                    </div>
+                    <div class="mt-2" *ngIf="context.traitSlotsAvailable && context.traitSlotsAvailable.length > 0">
+                      <div class="d-flex">
+                        <button class="btn btn-sm btn-lg btn-primary mt-auto me-2" (click)="revertTraits()">Revert to original Traits</button>
+                        <div class="btn-group-right">
+                          <button class="btn btn-sm btn-lg btn-primary mt-auto me-2" (click)="cancelTraits()">Cancel</button>
+                          <button class="btn btn-sm btn-lg btn-primary mt-auto" (click)="saveTraits()">Save</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!context.availableTraits">
+                    <p>Traits are currently not available for this mascot</p>
+                  </div>
+                </ng-template>
+              </li>
+              <li [ngbNavItem]="2">
+                <button ngbNavLink>Cosmetics</button>
+                <ng-template ngbNavContent>
+                  <div *ngIf="context.availableSlots" class="mt-2">
+                    <div class="row slot-row" *ngFor="let slotName of context.slotsAvailableForSelectedMascot">
+                      <label class="form-label col col-sm-3">{{ slotName }}</label>
+                      <select class="form-select form-select-sm col col-sm"
+                              (change)="onSlotChange(slotName, $event)">
+                        <option *ngFor="let item of context.availableSlots[slotName]" [value]="item.id"
+                                [selected]="context.selectedSlotValues?.[slotName] === item.id"
+                                [disabled]="!preview && !item.owned"
+                        >
+                          {{ item.displayName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mt-2" *ngIf="context.traitSlotsAvailable && context.traitSlotsAvailable.length > 0">
+                    <div class="d-flex">
+                      <button class="btn btn-sm btn-lg btn-primary mt-auto me-2" (click)="revertSlots()">Revert to original Slots</button>
+                      <div class="btn-group-right">
+                        <button class="btn btn-sm btn-lg btn-primary mt-auto me-2" (click)="cancelSlots()">Cancel</button>
+                        <button class="btn btn-sm btn-lg btn-primary mt-auto" (click)="saveSlots()">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!context.availableSlots">
+                    <p>Slots are currently not available for this mascot</p>
+                  </div>
+                </ng-template>
+              </li>
+              <li [ngbNavItem]="3">
+                <button ngbNavLink>Settings</button>
+                <ng-template ngbNavContent>
+                  <h2 class="highlight-color">Preview Mode</h2>
+                  <p>When preview mode is on you can freely choose and select all cosmetic options in the editor. During Phase 3 for testing purposes you can also update your Mascot with these settings without owning the cosmetic.</p>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="preview" id="preview">
+                    <label class="form-check-label" for="preview">
+                      Preview Mode
+                    </label>
+                  </div>
+                </ng-template>
+              </li>
+            </ul>
+            <div [ngbNavOutlet]="nav" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

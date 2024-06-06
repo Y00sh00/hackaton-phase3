@@ -1,0 +1,46 @@
+<div class="row equal-height-row d-flex flex-wrap">
+  <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+    <div class="card-body d-flex flex-column">
+      <div class="mascot-header">
+        <h1 class="card-title highlight-color">
+          Command Center
+        </h1>
+        <p>
+          The command center is your Hub for content for your mascots check out the options below.
+        </p>
+
+        <div class="alert alert-danger d-flex align-items-center mt-2" role="alert">
+          <fa-icon class="fa-2x me-2" [icon]="faWarning"></fa-icon>
+          <div>
+            <b>Disclaimer</b> <br>
+            <p>This was started with less < 24 h to go on the hackaton, as such many of these features might not fully
+              work or are as polished as the other parts of the site.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row equal-height-row d-flex flex-wrap">
+  <div class="col-3">
+    <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+      <img src="assets/campaign.png" class="card-img-top" alt="...">
+      <div class="card-body d-flex flex-column">
+        <h1 class="card-title highlight-color">
+          Active Campaign: Phase 3 Awakening
+        </h1>
+        <p>To celebrate Phase 3 testing of Project Awakening you can now claim your free limited edition arms for all
+          your mascots of the type 'Taury'</p>
+        <div style="display: flex;justify-content: center;">
+          <img src="assets/campaign_arms_left_preview.png" class="img-thumbnail me-4">
+          <img src="assets/campaign_arms_right_preview.png" class="img-thumbnail">
+        </div>
+
+        <app-countdown></app-countdown>
+
+        <a class="btn btn-primary mt-2">Claim Bonus!</a>
+      </div>
+    </div>
+  </div>
+</div>

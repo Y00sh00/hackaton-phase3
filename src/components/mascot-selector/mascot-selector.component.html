@@ -1,0 +1,33 @@
+<ng-container *ngIf="mascots$ | async as mascots">
+  <div class="row equal-height-row d-flex flex-wrap">
+    <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+      <div class="card-body d-flex flex-column">
+        <div class="mascot-header">
+          <h1 class="card-title highlight-color">
+            Select the mascot to modify below to continue
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row equal-height-row d-flex flex-wrap">
+    <div class="col-3 d-flex flex-column justify-content-between" *ngFor="let mascot of mascots">
+      <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+        <div class="card-body d-flex flex-column">
+          <div class="mascot-header">
+            <h1 class="card-title highlight-color">
+              {{mascot.name}}
+            </h1>
+            <a class="btn btn-primary btn-sm" (click)="select(mascot.id)">Select</a>
+          </div>
+          <div class="preview-container" *ngIf="mascot">
+            <ng-container *ngFor="let slot of mascot?.slots">
+              <app-render [options]="slot"
+                          [config]="{name: mascot.name, mascotType: mascot.mascotType, traits: mascot.traits}"></app-render>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
