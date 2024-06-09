@@ -4,10 +4,12 @@
       <img class="logo" src="assets/logo.svg" alt="Eve Awakening Logo">
     </div>
     <div *ngIf="connected === 'connected'">
+      <a routerLink="/news" routerLinkActive="active"  class="btn btn-primary btn-menu me-2">News & Info</a>
       <a routerLink="/editor" routerLinkActive="active"  class="btn btn-primary btn-menu me-2">Mascot Editor</a>
       <a routerLink="/mint" routerLinkActive="active" class="btn btn-primary btn-menu me-2">Mint</a>
       <a routerLink="/inventory" routerLinkActive="active"  class="btn btn-primary btn-menu me-2">Inventory</a>
-      <a routerLink="/command" routerLinkActive="active"  class="btn btn-primary btn-menu">Command Center</a>
+      <a routerLink="/command" routerLinkActive="active"  class="btn btn-primary btn-menu me-2">Command Center</a>
+      <a routerLink="/creator" routerLinkActive="active"  class="btn btn-primary btn-menu">Creator</a>
     </div>
     <div *ngIf="connected === 'connected'">
             <a class="btn btn-outline-dark disabled me-2">{{chainName}}</a>
@@ -15,6 +17,15 @@
     </div>
   </header>
   <main>
+    <div class="alert alert-warning d-flex align-items-center mt-2 mb-0" role="alert">
+      <div>
+        <b>Alpha version is live!</b> <br>
+        Hey thank you for visiting my Hackathon Contest entry, I've worked really hard on this for the last 7 days and am excited to show you a fully working version! I would love it if you'd consider voting for me <a href="https://phase3.projectawakening.io/modules/infohackathon/30">here ('Introducing the Mascot')</a>. <br>
+        While I prototyped minting NFTs into the wallet, this Live Alpha version does not do that yet but everything is stored on the block chain regardless. I might turn on minting the coming weeks if I am confident no data needs to be wiped as I introduce new features.
+
+        <b>I did not focus on small viewports yet so I recommend a with of your screen of at least 640px</b>
+      </div>
+    </div>
     <div *ngIf="connected === 'unknown'">
       Loading
     </div>
@@ -22,12 +33,7 @@
       <router-outlet></router-outlet>
     </ng-container>
     <div *ngIf="connected === 'disconnected'">
-      <!-- TODO Hack to make it work temporary in the in-game browser -->
-      <ng-container *ngIf="availableProviders[0].info.name !== 'OneKey'">
-        <app-editor-page></app-editor-page>
-      </ng-container>
-      <ng-container *ngIf="availableProviders[0].info.name === 'OneKey'">
-      <div class="row">
+      <div class="row mt-3">
         <div class="col-sm d-flex flex-column">
           <app-ssu-description></app-ssu-description>
         </div>
@@ -39,6 +45,14 @@
                 through your EVE Vault wallet.
               </div>
               <div class="connection-actions flex-grow-1">
+                <ng-container *ngIf="connected === 'disconnected' && connectButtonTried">
+                  <div class="alert alert-danger d-flex align-items-center mt-2 mb-2" role="alert">
+                    <div>
+                      <b>Install the EVE Vault</b> <br>
+                      It looks like you do not have the EVE Vault installed in your browser! Do that first!
+                    </div>
+                  </div>
+                </ng-container>
                 <button (click)="connect()" class="btn btn-dark">
                   Connect to wallet
                 </button>
@@ -50,7 +64,6 @@
           </div>
         </div>
       </div>
-      </ng-container>
     </div>
   </main>
 </div>

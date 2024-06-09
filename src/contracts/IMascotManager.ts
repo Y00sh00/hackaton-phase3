@@ -1,7 +1,7 @@
 export const IMASCOT_MANAGER_ABI = [
   {
     "type": "function",
-    "name": "kalb_v17__addSlotToMascot",
+    "name": "kalb_v22__addSlotToMascot",
     "inputs": [
       {
         "name": "mascotId",
@@ -19,7 +19,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getAllSlots",
+    "name": "kalb_v22__getAllSlots",
     "inputs": [],
     "outputs": [
       {
@@ -79,7 +79,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getAllTraits",
+    "name": "kalb_v22__getAllTraits",
     "inputs": [],
     "outputs": [
       {
@@ -119,7 +119,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getFullSlots",
+    "name": "kalb_v22__getFullSlots",
     "inputs": [
       {
         "name": "sourceSlots",
@@ -180,7 +180,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getFullUserMascots",
+    "name": "kalb_v22__getFullUserMascots",
     "inputs": [
       {
         "name": "user",
@@ -295,7 +295,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getMascot",
+    "name": "kalb_v22__getMascot",
     "inputs": [
       {
         "name": "mascotId",
@@ -346,7 +346,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getSlot",
+    "name": "kalb_v22__getSlot",
     "inputs": [
       {
         "name": "slotId",
@@ -407,7 +407,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getSlotChanges",
+    "name": "kalb_v22__getSlotChanges",
     "inputs": [
       {
         "name": "mascotId",
@@ -443,7 +443,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getTrait",
+    "name": "kalb_v22__getTrait",
     "inputs": [
       {
         "name": "traitId",
@@ -484,7 +484,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getTraitChanged",
+    "name": "kalb_v22__getTraitChanged",
     "inputs": [
       {
         "name": "mascotId",
@@ -525,7 +525,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__getUserMascots",
+    "name": "kalb_v22__getUserMascots",
     "inputs": [
       {
         "name": "user",
@@ -544,7 +544,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__removeSlotChanges",
+    "name": "kalb_v22__removeSlotChanges",
     "inputs": [
       {
         "name": "mascotId",
@@ -562,7 +562,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__removeTraitChanges",
+    "name": "kalb_v22__removeTraitChanges",
     "inputs": [
       {
         "name": "mascotId",
@@ -580,7 +580,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__setup",
+    "name": "kalb_v22__setup",
     "inputs": [],
     "outputs": [
       {
@@ -645,7 +645,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__updateSlots",
+    "name": "kalb_v22__updateSlots",
     "inputs": [
       {
         "name": "mascotId",
@@ -668,7 +668,7 @@ export const IMASCOT_MANAGER_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__updateTraits",
+    "name": "kalb_v22__updateTraits",
     "inputs": [
       {
         "name": "mascotId",
@@ -699,4 +699,4 @@ export const IMASCOT_MANAGER_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable"
   }
-] as const
+]as const

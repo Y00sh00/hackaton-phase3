@@ -1,14 +1,13 @@
-.character-container {
+.creator-container {
   display: flex;
   justify-content: center;
   align-content: center;
   align-items: center;
   transform: scale(1);
-
-  // TODO We compensate here for some bad layout with the SVG source files
-  margin-top: -420px;
-  margin-left: -420px;
+  margin-left: -300px;
+  margin-top: 150px;
 }
+
 
 .debug-container {
   display: flex;

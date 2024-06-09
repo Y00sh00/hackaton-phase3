@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CharacterService} from "../../services/character.service";
 import {HttpClientModule} from "@angular/common/http";
@@ -16,7 +16,7 @@ import {
   NgbNavContent, NgbNavLinkBase,
   NgbNavOutlet,
   NgbNavItem,
-  NgbNavLinkButton, NgbTooltip
+  NgbNavLinkButton, NgbTooltip, NgbNavChangeEvent
 } from "@ng-bootstrap/ng-bootstrap";
 import {
   MascotState,
@@ -63,6 +63,8 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   // Modal Info
   private modalService = inject(NgbModal);
   closeResult = '';
+
+  @ViewChild('content') content: TemplateRef<any>;
 
   // Tooltip info
   placeholder = "Placeholder, this will holds text explaining the term";
@@ -133,7 +135,17 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   }
 
   revertTraits() {
-    this.store.dispatch(new RevertTraitModifications());
+    this.modalService.open(this.content, { centered: true }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+        if(result === "Submit") {
+          this.store.dispatch(new RevertTraitModifications());
+        }
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      },
+    );
   }
 
   revertSlots() {
@@ -147,4 +159,5 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   saveSlots() {
     this.store.dispatch(new SaveMascotSlots());
   }
+
 }

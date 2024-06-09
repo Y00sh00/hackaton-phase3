@@ -25,6 +25,7 @@ import {InitMascotState} from "../states/mascot-state.service";
 export class AppComponent implements OnInit {
   connected$: Observable<string> = of("unknown");
   public smartObjectId: string | null = null;
+  public connectButtonTried = false;
   chainName: string = CHAIN.name;
   public availableProviders: EIP6963ProviderDetail[] = [];
 
@@ -40,21 +41,29 @@ export class AppComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.web3Service.init();
 
-    this.store.dispatch(new InitMascotState());
-
+    if (this.web3Service.account) {
+      this.store.dispatch(new InitMascotState());
+    }
     this.route.queryParamMap.subscribe((params) => {
       this.smartObjectId = params.get('smartObjectId');
     });
+
+    this.connected$.subscribe(item => {
+
+      this.store.dispatch(new InitMascotState());
+    })
   }
 
   async connect(): Promise<void> {
-    if(this.availableProviders.length > 0){
+    this.connectButtonTried = true;
+    if (this.availableProviders.length > 0) {
       await this.web3Service.connect(this.availableProviders[0]);
     }
     await this.web3Service.connect();
   }
 
   async disconnect() {
+    this.connectButtonTried = false;
     await this.web3Service.disconnect();
   }
 

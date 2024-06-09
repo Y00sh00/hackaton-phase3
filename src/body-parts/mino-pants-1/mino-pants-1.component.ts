@@ -12,13 +12,13 @@ import {BaseComponent} from "../../base-component.directive";
   styleUrl: './mino-pants-1.component.scss'
 })
 export class MinoPants1Component extends BaseComponent {
-  mainColor = "#625246";
+  color1 = "#625246";
   borderColor = "#1b1a18";
   override x: number = 100;
   override y: number = 408;
 
   getProperties(){
-    return ['borderColor', 'mainColor']
+    return ['borderColor', 'color1']
   }
 }
 

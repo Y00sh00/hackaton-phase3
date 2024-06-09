@@ -1,5 +1,5 @@
 export const WORLD_ADDRESS = '0x8dc9cab3e97da6df615a8a24cc07baf110d63071'
-export const CONTRACT_NAMESPACE = 'kalb_v17'
+export const CONTRACT_NAMESPACE = 'kalb_v22'
 export const MASCOT_MANAGER_SYSTEM_NAME = 'MascotManager'
 // Chain configuration goes here
 export const CHAIN = {

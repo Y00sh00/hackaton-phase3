@@ -16,10 +16,10 @@ import {RenderComponent} from "../../render/render.component";
 export class MinoGotee1Component extends BaseComponent {
   override x: number = 0;
   override y: number = 0;
-  beardColor = "#4f312c";
+  color1 = "#4f312c";
 
   getProperties(){
-    return ['beardColor']
+    return ['color1']
   }
 }
 

@@ -1,7 +1,26 @@
 export const IMASCOT_CREATOR_ABI = [
   {
     "type": "function",
-    "name": "kalb_v17__createMascot",
+    "name": "kalb_v22__claimCampaign",
+    "inputs": [
+      {
+        "name": "campaignId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "kalb_v22__createMascot",
     "inputs": [
       {
         "name": "user",
@@ -30,7 +49,7 @@ export const IMASCOT_CREATOR_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__createSlot",
+    "name": "kalb_v22__createSlot",
     "inputs": [
       {
         "name": "slotName",
@@ -79,7 +98,7 @@ export const IMASCOT_CREATOR_ABI = [
   },
   {
     "type": "function",
-    "name": "kalb_v17__createTrait",
+    "name": "kalb_v22__createTrait",
     "inputs": [
       {
         "name": "traitSlot",
@@ -102,6 +121,25 @@ export const IMASCOT_CREATOR_ABI = [
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "kalb_v22__isCampaignClaimed",
+    "inputs": [
+      {
+        "name": "campaignId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "stateMutability": "nonpayable"

@@ -1,46 +1,261 @@
-<div class="row equal-height-row d-flex flex-wrap">
-  <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
-    <div class="card-body d-flex flex-column">
-      <div class="mascot-header">
-        <h1 class="card-title highlight-color">
-          Command Center
-        </h1>
-        <p>
-          The command center is your Hub for content for your mascots check out the options below.
-        </p>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Rewards Unlocked!</h4>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p>You have unlocked:</p>
+    <div style="display: flex;justify-content: center;">
+      <img src="assets/campaign_arms_left_preview.png" class="img-thumbnail me-4">
+      <img src="assets/campaign_arms_right_preview.png" class="img-thumbnail">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">OK</button>
+  </div>
+</ng-template>
 
-        <div class="alert alert-danger d-flex align-items-center mt-2" role="alert">
-          <fa-icon class="fa-2x me-2" [icon]="faWarning"></fa-icon>
-          <div>
-            <b>Disclaimer</b> <br>
-            <p>This was started with less < 24 h to go on the hackaton, as such many of these features might not fully
-              work or are as polished as the other parts of the site.</p>
+<ng-container
+  *ngIf="{campaignClaimed: campaignClaimed$ | async, isLoaded: isLoaded$ | async, traitsUnlocked: traitsUnlocked$ | async} as context">
+  <ng-container *ngIf="!context.isLoaded">
+    <div class="d-flex justify-content-center mt-3">
+      <div class="spinner-grow" role="status" style="width: 20rem; height: 20rem;">
+      </div>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <div class="bg-dark-transparent rounded px-2 py-2 mt-2 text-white">
+
+        <div class="loader">Loading or writing data on <a
+          class="highlight-color tooltip-trigger" [ngbTooltip]="placeholder" triggers="click:blur">blockchain</a> <span
+          class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span></div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="context.isLoaded">
+    <div class="row equal-height-row d-flex flex-wrap">
+      <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
+        <div class="card-body d-flex flex-column">
+          <div class="mascot-header">
+            <h1 class="card-title highlight-color">
+              Command Center
+            </h1>
+            <p>
+              The command center is your Hub for content for your mascots check out the options below.
+            </p>
+
+            <div class="alert alert-danger d-flex align-items-center mt-2" role="alert">
+              <fa-icon class="fa-2x me-2" [icon]="faWarning"></fa-icon>
+              <div>
+                <b>Disclaimer</b> <br>
+                <p>This was started with less < 24 h to go on the hackaton, as such many of these features might not
+                  fully
+                  work or are as polished as the other parts of the site.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<div class="row equal-height-row d-flex flex-wrap">
-  <div class="col-3">
-    <div class="card bg-dark-transparent text-white flex-grow-1 mt-3">
-      <img src="assets/campaign.png" class="card-img-top" alt="...">
-      <div class="card-body d-flex flex-column">
-        <h1 class="card-title highlight-color">
-          Active Campaign: Phase 3 Awakening
-        </h1>
-        <p>To celebrate Phase 3 testing of Project Awakening you can now claim your free limited edition arms for all
-          your mascots of the type 'Taury'</p>
-        <div style="display: flex;justify-content: center;">
-          <img src="assets/campaign_arms_left_preview.png" class="img-thumbnail me-4">
-          <img src="assets/campaign_arms_right_preview.png" class="img-thumbnail">
+    <div class="row equal-height-row d-flex flex-wrap">
+      <div class="col-4">
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 command-card">
+          <img src="assets/campaign.png" height="140" class="card-img-top" alt="...">
+          <div class="card-body d-flex flex-column">
+            <h1 class="card-title highlight-color">
+              Active Campaign: Phase 3 Awakening
+            </h1>
+            <p>To celebrate Phase 3 testing of Project Awakening you can now claim your free limited edition arms for
+              all
+              your mascots of the type 'Taury'</p>
+            <div style="display: flex;justify-content: center;">
+              <img src="assets/campaign_arms_left_preview.png" class="img-thumbnail me-4">
+              <img src="assets/campaign_arms_right_preview.png" class="img-thumbnail">
+            </div>
+
+            <app-countdown></app-countdown>
+
+            <button class="btn btn-primary mt-2" (click)="claimCampaign(1)" [disabled]="context.campaignClaimed">
+              <ng-container *ngIf="!context.campaignClaimed">
+                Claim Bonus!
+              </ng-container>
+              <ng-container *ngIf="context.campaignClaimed">
+                Claimed
+              </ng-container>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 command-card">
+          <img src="assets/store.png" height="140" class="card-img-top" alt="...">
+          <div class="card-body d-flex flex-column">
+            <h1 class="card-title highlight-color">
+              Store Offers: "What a Belter!"
+            </h1>
+
+            <div class="store-card rounded p-3 mt-2">
+              <div class="store-line">
+                <div class="highlight-color store-item-name text-center" style="width: 200px">Red Cloth Belt</div>
+                <div class="text-centerphp -m | grep dom" style="font-weight: lighter; width: 100px;">$KLBN 1.50</div>
+              </div>
+              <div class="store-line">
+                <img src="assets/store_mino_belt_3.png" style="width: 200px" class="img-thumbnail store-thumbnail">
+                <button class="btn btn-primary" style="width: 100px;">
+                  <fa-icon [icon]="shopIcon"></fa-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="store-card rounded p-3 mt-2">
+              <div class="store-line">
+                <div class="highlight-color store-item-name text-center" style="width: 200px">Leather Belt</div>
+                <div class="text-center" style="font-weight: lighter; width: 100px;">$KLBN 1.50</div>
+              </div>
+              <div class="store-line">
+                <img src="assets/store_mino_belt_4.png" style="width: 200px" class="img-thumbnail store-thumbnail">
+                <button class="btn btn-primary" style="width: 100px;">
+                  <fa-icon [icon]="shopIcon"></fa-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="store-card rounded p-3 mt-2">
+              <div class="store-line">
+                <div class="highlight-color store-item-name text-center" style="width: 200px">Belt with Buckle</div>
+                <div class="text-center" style="font-weight: lighter; width: 100px;">$KLBN 1.50</div>
+              </div>
+              <div class="store-line">
+                <img src="assets/store_mino_belt_4.png" style="width: 200px" class="img-thumbnail store-thumbnail">
+                <button class="btn btn-primary" style="width: 100px;">
+                  <fa-icon [icon]="shopIcon"></fa-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 store-card-overlay">
+          <div class="card-body d-flex flex-column">
+            <div style="transform: rotate(45deg);margin-top: 300px; font-size: 3em; margin-left: 120px">
+              Coming Soon?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 command-card">
+          <img src="assets/store.png" height="140" class="card-img-top" alt="...">
+          <div class="card-body d-flex flex-column">
+            <h1 class="card-title highlight-color">
+              Scavenge Hunt: "Scour the Universe"
+            </h1>
+
+            <p>
+              We've hidden SSU's around the galaxy, finding them and interacting with them will allow you to unlock
+              additional cosmetic rewards. SSU's need to be visited in order, and hints will be provided along the way.
+            </p>
+
+
+            <div class="highlight-color mt-2">
+              Hunt 1: "Solar Scramble"
+            </div>
+            <div class="progress mb-2">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                   aria-valuemax="100"></div>
+            </div>
+
+            <div class="highlight-color">
+              Hunt 2: "Drill Thrill"
+            </div>
+            <div class="progress mb-5">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                   aria-valuemax="100"></div>
+            </div>
+
+            <div class="highlight-color">
+              Community Progress
+            </div>
+            <div>
+              Unlock more rewards as more people in the community find the scavenge locations.
+            </div>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                   aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 store-card-overlay">
+          <div class="card-body d-flex flex-column">
+            <div style="transform: rotate(45deg);margin-top: 300px; font-size: 3em; margin-left: 120px">
+              Coming Soon?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 command-card">
+          <img src="assets/store.png" height="140" class="card-img-top" alt="...">
+          <div class="card-body d-flex flex-column" style="justify-content: center;">
+            <ng-container *ngIf="context && context.traitsUnlocked">
+              <h1 class="card-title highlight-color">
+                Quest: Trait Trek #1
+              </h1>
+              <p>
+                Mint Mascots for your chance to unlock the 4 body color traits: brown, light-grey, dark-red, yellow!
+                Everytime you mint a mascot one of these traits will be randomly unlocked. Unlock them all to claim your
+                reward!
+              </p>
+              <div class="text-center" style="font-size: 1.5em;">{{context.traitsUnlocked.length}}/4</div>
+              <div class="progress mb-5">
+                <div class="progress-bar" [ngClass]="getWidthClass(context.traitsUnlocked.length)" role="progressbar" aria-valuenow="0"
+                     aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </ng-container>
+          </div>
         </div>
 
-        <app-countdown></app-countdown>
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 store-card-overlay">
+          <div class="card-body d-flex flex-column">
+            <div style="transform: rotate(45deg);margin-top: 200px; font-size: 3em; margin-left: 120px">
+              Coming Soon?
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <a class="btn btn-primary mt-2">Claim Bonus!</a>
+      <div class="col-4">
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 command-card">
+          <img src="assets/store.png" height="140" class="card-img-top" alt="...">
+          <div class="card-body d-flex flex-column">
+            <h1 class="card-title highlight-color">
+              Star-stashed Booty
+            </h1>
+            <p>
+              Collect Reward Chest filled with traits, mascots and cosmetics. You can get them by participating in the community such as fleets, mining operations and karaoke night!
+            </p>
+
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <img src="assets/reward-box.png" class="img-fluid" style="max-width: 300px; border: 1px solid black;">
+            </div>
+
+            <button type="button" class="btn btn-primary mt-5">
+              Notifications <span class="badge bg-secondary">4</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card bg-dark-transparent text-white flex-grow-1 mt-3  h-100 store-card-overlay">
+          <div class="card-body d-flex flex-column">
+            <div style="transform: rotate(45deg);margin-top: 200px; font-size: 3em; margin-left: 120px">
+              Coming Soon?
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </ng-container>
+</ng-container>

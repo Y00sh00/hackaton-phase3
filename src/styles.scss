@@ -59,10 +59,16 @@ h2 {
   color: #eaab1a !important;
   background-color: #212529 !important;
   border-color: #eaab1a !important;
+  border-bottom: none !important;
+}
+
+.nav-link {
+  background-color: #212529 !important;
+  border: 1px solid #30363a !important;
 }
 
 .nav-tabs {
-  border-bottom-color: #eaab1a !important;
+  border-bottom-color: #30363a !important;
 }
 
 .align-middle {
@@ -99,6 +105,10 @@ h2 {
 }
 
 $grid-gutter-width: 0.5rem;
+
+$modal-content-color: white;
+$modal-content-bg: #212529;
+
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';

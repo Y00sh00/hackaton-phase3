@@ -4,6 +4,8 @@ import {produce} from "immer";
 import {Web3Service} from "../services/web3.service";
 import {IMASCOT_MANAGER_ABI} from "../contracts/IMascotManager";
 import {Mascot, SlotData, SlotsMappedBySlotType, TraitData, TraitMappedBySlot} from "../model/Mascot";
+import {IMASCOT_CREATOR_ABI} from "../contracts/IMascotCreator";
+import {Router} from "@angular/router";
 
 export class InitMascotState {
   static readonly type = '[MascotState] Init';
@@ -25,6 +27,20 @@ export class SelectMascot {
   }
 }
 
+export class UpdateSlotOnCreatorMascot {
+  static readonly type = '[MascotState] Update Slot On Creator Mascot';
+
+  constructor(public selectedId: number) {
+  }
+}
+
+export class CreateCosmeticFromSlotUnderEdit {
+  static readonly type = '[MascotState] Create Cosmetic from SlotUnderEdit';
+
+  constructor() {
+  }
+}
+
 export class ResetLoaded {
   static readonly type = '[MascotState] Reset Loaded';
 
@@ -34,6 +50,13 @@ export class ResetLoaded {
 
 export class RevertLoaded {
   static readonly type = '[MascotState] Revert Loaded';
+
+  constructor() {
+  }
+}
+
+export class ResetCreatorMascot {
+  static readonly type = '[MascotState]  Reset Creator Mascot';
 
   constructor() {
   }
@@ -74,6 +97,13 @@ export class SaveMascotTraits {
   }
 }
 
+export class AdjustColorOnCreatorMascotSlot {
+  static readonly type = '[MascotState] Adjust Color on Creator Mascot Slot';
+
+  constructor(public colorFieldName: string, public color: string) {
+  }
+}
+
 export class SaveMascotSlots {
   static readonly type = '[MascotState] Save Slots';
 
@@ -95,24 +125,30 @@ export class UpdateSlotOnSelectedMascot {
   }
 }
 
-// Todo Obtainment
-// Todo Add Hands
-// Todo fix colors not loading
-// Todo Testing
+export class AdjustSlotOnCreatorMascot {
+  static readonly type = '[MascotState] Update Slot on Creator Mascot';
+
+  constructor(public newSlot: SlotData) {
+  }
+}
+
+// Required
+// -
 // Small:
-// Bonus Todo Trait saving and Slot saving is independent, give warning when switching tab
-// Bonus Todo Warning when clicking revert dialog and add a (i)
-// Bonus: Todo History (atleast add a button)
-// Bonus: Gift
+// -
 // Bigger:
-// Bonus: Todo Campaign / Store / Boxes / Unlocks / Quest /Collections and Scavenge Hunt
 // Bonus: Todo All Mascots baord
-// Bonus: Todo Mascot Editor
 // Bonus: Todo Visual Selector on editor
 // Biggest:
-// Bonus: Todo Emote?
+// Bonus: Todo History (atleast add a button)
+// Bonus: Todo Emote animation prototype
+// Bonus: Todo customization options on owned items I.E. Color Picker
 // Bonus: Todo Feed / Stats
-// Bonus: Todo Color Picker
+// Bonus: No vault installed == error
+// Later:
+// Bonus: Doesn't work in-game probably due to provider injection not working
+// Bonus Todo Trait saving and Slot saving is independent, give warning when switching tab
+
 
 export interface IMascotStateModel {
   loaded: boolean
@@ -127,7 +163,11 @@ export interface IMascotStateModel {
   traitChangedOnMascot: string[];
   slotChangedOnMascot: string[];
   allAvailableTraits: TraitData[],
-  allAvailableSlots: SlotData[]
+  allAvailableSlots: SlotData[],
+  creatorAvailableSlots: SlotData[],
+  campaignClaimed: boolean,
+  creatorMascot: Mascot | undefined,
+  slotUnderEdit: SlotData | undefined,
 }
 
 const defaultValues: IMascotStateModel = {
@@ -145,7 +185,11 @@ const defaultValues: IMascotStateModel = {
   traitChangedOnMascot: [],
   slotChangedOnMascot: [],
   allAvailableTraits: [],
-  allAvailableSlots: []
+  allAvailableSlots: [],
+  creatorAvailableSlots: [],
+  campaignClaimed: false,
+  creatorMascot: undefined,
+  slotUnderEdit: undefined
 }
 
 @State<IMascotStateModel>({
@@ -154,6 +198,11 @@ const defaultValues: IMascotStateModel = {
 })
 @Injectable()
 export class MascotState {
+  @Selector()
+  static campaignClaimed(state: IMascotStateModel) {
+    return state.campaignClaimed;
+  }
+
   @Selector()
   static loaded(state: IMascotStateModel) {
     return state.loaded;
@@ -167,6 +216,11 @@ export class MascotState {
   @Selector()
   static selectedMascot(state: IMascotStateModel) {
     return state.selectedMascot;
+  }
+
+  @Selector()
+  static slotUnderEdit(state: IMascotStateModel) {
+    return state.slotUnderEdit;
   }
 
   @Selector()
@@ -215,6 +269,16 @@ export class MascotState {
   }
 
   @Selector()
+  static creatorAvailableSlots(state: IMascotStateModel) {
+    return state.creatorAvailableSlots;
+  }
+
+  @Selector()
+  static creatorMascot(state: IMascotStateModel) {
+    return state.creatorMascot;
+  }
+
+  @Selector()
   static hasMascotsOrLoading(state: IMascotStateModel) {
     if (state.loaded) {
       return state.mascots.length > 0;
@@ -247,7 +311,7 @@ export class MascotState {
     });
   }
 
-  constructor(private store: Store, private web3Service: Web3Service) {
+  constructor(private store: Store, private web3Service: Web3Service, private router: Router) {
     // tslint:disable-next-line:no-string-literal
     (window as any)['ngxs'] = store;
     // allows for window[0].ngxs.snapshot() or window.ngxs.snapshot() depending
@@ -353,6 +417,192 @@ export class MascotState {
       })
     )
     this.store.dispatch([new SyncActiveSlots()]);
+  }
+
+  @Action(ResetCreatorMascot)
+  resetCreatorMascot(ctx: StateContext<IMascotStateModel>, {}: ResetCreatorMascot): void {
+    ctx.setState(
+      produce(draft => {
+        draft.creatorMascot = ctx.getState().mascots[0];
+        draft.slotUnderEdit = undefined;
+      }));
+  }
+
+  @Action(UpdateSlotOnCreatorMascot)
+  updateSlotOnCreatorMascot(ctx: StateContext<IMascotStateModel>, {
+    selectedId
+  }: UpdateSlotOnCreatorMascot): void {
+    ctx.setState(
+      produce(draft => {
+        const updateSlotRecursively = (slots: SlotData[], slotName: string, newSlot: SlotData): SlotData[] => {
+          return slots.map(slot => {
+            if (slot.slotName === slotName) {
+              return {...newSlot};
+            }
+
+            if (slot.slots && slot.slots.length > 0) {
+              return {
+                ...slot,
+                slots: updateSlotRecursively(slot.slots, slotName, newSlot)
+              };
+            }
+
+            return slot;
+          });
+        };
+
+        const newSlot = draft.creatorAvailableSlots.find(item => item.id === selectedId)
+        draft.slotUnderEdit = newSlot;
+        const currentMascot = ctx.getState().creatorMascot;
+        if (draft.creatorMascot && currentMascot && currentMascot.slots && newSlot) {
+          const slotName = newSlot.slotName;
+          draft.creatorMascot.slots = currentMascot.slots.map(item => {
+            if (item.slotName === slotName) {
+              const newItem: SlotData = {
+                ...newSlot
+              };
+              return newItem;
+            }
+
+            if (item.slots && item.slots.length > 0) {
+              return {
+                ...item,
+                slots: updateSlotRecursively(item.slots, slotName, newSlot)
+              };
+            }
+
+            return item;
+          })
+        } else {
+          throw new Error('Could not set new Trait lacking a current mascot or traits');
+        }
+      })
+    )
+  }
+
+
+  @Action(AdjustColorOnCreatorMascotSlot)
+  adjustColorOnCreatorMascotSlot(ctx: StateContext<IMascotStateModel>, {
+    color, colorFieldName
+  }: AdjustColorOnCreatorMascotSlot): void {
+    ctx.setState(
+      produce(draft => {
+        const newSlot = draft.slotUnderEdit;
+        if (newSlot && colorFieldName === 'color1') {
+          newSlot.color1 = color;
+        }
+        if (newSlot && colorFieldName === 'color2') {
+          newSlot.color2 = color;
+        }
+        if (newSlot && colorFieldName === 'color3') {
+          newSlot.color3 = color;
+        }
+        if (newSlot && colorFieldName === 'color4') {
+          newSlot.color4 = color;
+        }
+        if (newSlot && colorFieldName === 'color5') {
+          newSlot.color5 = color;
+        }
+
+        const updateSlotRecursively = (slots: SlotData[], slotName: string, newSlot: SlotData): SlotData[] => {
+          return slots.map(slot => {
+            if (slot.slotName === slotName) {
+              return {...newSlot};
+            }
+
+            if (slot.slots && slot.slots.length > 0) {
+              return {
+                ...slot,
+                slots: updateSlotRecursively(slot.slots, slotName, newSlot)
+              };
+            }
+
+            return slot;
+          });
+        };
+
+        //@ts-ignore issue with id being optional
+        draft.slotUnderEdit = {...newSlot};
+        const currentMascot = ctx.getState().creatorMascot;
+        if (draft.creatorMascot && currentMascot && currentMascot.slots && newSlot) {
+          const slotName = newSlot.slotName;
+          draft.creatorMascot.slots = currentMascot.slots.map(item => {
+            if (item.slotName === slotName) {
+              const newItem: SlotData = {
+                ...newSlot
+              };
+              return newItem;
+            }
+
+            if (item.slots && item.slots.length > 0) {
+              return {
+                ...item,
+                slots: updateSlotRecursively(item.slots, slotName, newSlot)
+              };
+            }
+
+            return item;
+          })
+        } else {
+          throw new Error('Could not set new Trait lacking a current mascot or traits');
+        }
+
+      })
+    )
+  }
+
+
+  @Action(AdjustSlotOnCreatorMascot)
+  adjustSlotOnCreatorMascot(ctx: StateContext<IMascotStateModel>, {
+    newSlot
+  }: AdjustSlotOnCreatorMascot): void {
+    ctx.setState(
+      produce(draft => {
+        const updateSlotRecursively = (slots: SlotData[], slotName: string, newSlot: SlotData): SlotData[] => {
+          return slots.map(slot => {
+            if (slot.slotName === slotName) {
+              return {...newSlot};
+            }
+
+            if (slot.slots && slot.slots.length > 0) {
+              return {
+                ...slot,
+                slots: updateSlotRecursively(slot.slots, slotName, newSlot)
+              };
+            }
+
+            return slot;
+          });
+        };
+
+        //@ts-ignore issue with id being optional
+        draft.slotUnderEdit = {...newSlot};
+        const currentMascot = ctx.getState().creatorMascot;
+        if (draft.creatorMascot && currentMascot && currentMascot.slots && newSlot) {
+          const slotName = newSlot.slotName;
+          draft.creatorMascot.slots = currentMascot.slots.map(item => {
+            if (item.slotName === slotName) {
+              const newItem: SlotData = {
+                ...newSlot
+              };
+              return newItem;
+            }
+
+            if (item.slots && item.slots.length > 0) {
+              return {
+                ...item,
+                slots: updateSlotRecursively(item.slots, slotName, newSlot)
+              };
+            }
+
+            return item;
+          })
+        } else {
+          throw new Error('Could not set new Trait lacking a current mascot or traits');
+        }
+
+      })
+    )
   }
 
   @Action(UpdateTraitOnSelectedMascot)
@@ -519,7 +769,6 @@ export class MascotState {
     // Slots Retrieval
     const allSlotsFunction = this.web3Service.withNameSpaceAndName('getAllSlots');
     const slotsResponse = await this.web3Service.simulateContract(IMASCOT_MANAGER_ABI, allSlotsFunction, []) as SlotData[];
-    console.log(slotsResponse);
     const slotsToAssign = await this.postProcessSlot(slotsResponse);
     const slotsKeyedBySlotType = await this.mapSlotsBySlotType(slotsToAssign);
     const slotsAvailableOnMascot = this.getDistinctSlotTypes(slotsToAssign);
@@ -529,8 +778,19 @@ export class MascotState {
     const mascotsResponse = await this.web3Service.simulateContract(IMASCOT_MANAGER_ABI, allUserMascotsFunction, [currentUserAddress]) as Mascot[];
     const mascotsToAsssign = await this.postProcessMascots(mascotsResponse, slotsAvailableOnMascot, slotsToAssign);
 
+    // Campaign Retrieval
+    const campaignFunction = this.web3Service.withNameSpaceAndName('isCampaignClaimed');
+    const campaignResponse = await this.web3Service.simulateContract(IMASCOT_CREATOR_ABI, campaignFunction, [1]) as boolean;
+
     // We sync to get the changes synced to the selected model (todo probably is a better way)
     this.store.dispatch([new SyncActiveTraits(), new SyncActiveSlots()]);
+
+    let creatorMascot;
+    if (mascotsToAsssign[0]) {
+      creatorMascot = mascotsToAsssign[0];
+    } else {
+      creatorMascot = undefined;
+    }
 
     ctx.setState(
       produce(draft => {
@@ -541,9 +801,59 @@ export class MascotState {
           draft.availableSlotsBySlotType = slotsKeyedBySlotType,
           draft.availableSlotsOnMascot = slotsAvailableOnMascot,
           draft.allAvailableSlots = slotsToAssign,
-          draft.allAvailableTraits = traitsToAssign
+          draft.creatorAvailableSlots = slotsToAssign,
+          draft.allAvailableTraits = traitsToAssign,
+          draft.campaignClaimed = campaignResponse,
+          draft.creatorMascot = creatorMascot
       })
     );
+  }
+
+  @Action(CreateCosmeticFromSlotUnderEdit)
+  async createCosmeticFromSlotUnderEdit(ctx: StateContext<IMascotStateModel>) {
+    const state = ctx.getState();
+    const newCosmetic = {...state.slotUnderEdit};
+
+    // Perform your synchronous state transformations first
+    const propertiesArray = [];
+    if (newCosmetic.zIndex === null) {
+      propertiesArray.push('null');
+    } else if (newCosmetic.zIndex === 5 || newCosmetic.zIndex === undefined) {
+      propertiesArray.push('default');
+    } else if (typeof newCosmetic.zIndex === 'number' && !isNaN(newCosmetic.zIndex)) {
+      propertiesArray.push(newCosmetic.zIndex.toString());
+    } else {
+      console.log('value of zindex was', newCosmetic.zIndex);
+      throw new Error('Unexpected value for zIndex');
+    }
+
+    const colorProperties = ['color1', 'color2', 'color3', 'color4', 'color'];
+    colorProperties.forEach(prop => {
+      // @ts-ignore
+      if (newCosmetic[prop]) {
+        // @ts-ignore
+        propertiesArray.push(newCosmetic[prop]);
+      }
+    });
+
+    let properties = propertiesArray.join(', ');
+    // @ts-ignore
+    let slotArray: BigInt[] = [];
+    if(newCosmetic.slots){
+      slotArray = newCosmetic.slots.map(slot => BigInt(slot.id));
+    }
+
+    // Log the intended changes before making them
+    console.log('slot creation properties are:', properties);
+    console.log('data is:', newCosmetic);
+    console.log('sub slots are', slotArray);
+
+    // Now, call your async function
+    const functionName = this.web3Service.withNameSpaceAndName('createSlot');
+    await this.web3Service.writeContract(IMASCOT_CREATOR_ABI, functionName, [newCosmetic.slotName, newCosmetic.selectedComponent, newCosmetic.displayName, newCosmetic.x, newCosmetic.y, slotArray, properties]);
+
+    // Update the state after the asynchronous call
+    await this.store.dispatch([new RevertLoaded(),new ResetCreatorMascot(), new InitMascotState()]);
   }
 
   private async patchSlotModifications(slots: SlotData[], mascotId: number, slotsAvailableOnMascot: string[], slotsToAssign: SlotData[]) {

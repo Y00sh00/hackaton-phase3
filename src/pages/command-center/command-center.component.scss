@@ -2,3 +2,33 @@
   background-color: #313b3f;
   border-color: black;
 }
+
+.store-card {
+  background-color: #313b3f;
+  border: 1px solid #283036;
+}
+
+.store-line {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  align-items: center;
+}
+
+.store-item-name{
+  font-size: 1.1em;
+}
+
+.store-thumbnail{
+  background-color: rgba(0,0,0,0.3);
+}
+
+.store-card-overlay {
+  position: relative;
+  margin-top: -612px !important;
+  height: 613px !important;
+}
+
+.command-card {
+  height: 613px !important;
+}
